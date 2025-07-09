@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "patients",
+  "info": {
+    "singularName": "patient",
+    "pluralName": "patients",
+    "displayName": "Patient"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "patient_id": {
+      "type": "uid"
+    },
+    "clinic": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::clinic.clinic",
+      "inversedBy": "patient"
+    },
+    "cliente_name": {
+      "type": "string"
+    },
+    "direction": {
+      "type": "string"
+    },
+    "number_direction": {
+      "type": "biginteger"
+    },
+    "cell_phone": {
+      "type": "biginteger"
+    },
+    "obra_social": {
+      "type": "string"
+    },
+    "recetas": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "turno": {
+      "type": "datetime"
+    }
+  }
+}
