@@ -1,0 +1,71 @@
+{
+  "kind": "collectionType",
+  "collectionName": "professionals",
+  "info": {
+    "singularName": "professional",
+    "pluralName": "professionals",
+    "displayName": "Professional"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "professional_id": {
+      "type": "uid"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "speciality": {
+      "type": "enumeration",
+      "enum": [
+        "general",
+        "cardiologia",
+        "dermatologia",
+        "ginecologia",
+        "pediatria"
+      ]
+    },
+    "status_professional": {
+      "type": "enumeration",
+      "default": "active",
+      "enum": [
+        "active",
+        "inactive",
+        "vacation"
+      ]
+    },
+    "clinic": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::clinic.clinic"
+    },
+    "bio": {
+      "type": "blocks"
+    },
+    "bio_professional": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "appoitment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::appoitment.appoitment",
+      "mappedBy": "professional"
+    }
+  }
+}

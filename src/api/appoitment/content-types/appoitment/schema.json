@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "appoitments",
+  "info": {
+    "singularName": "appoitment",
+    "pluralName": "appoitments",
+    "displayName": "Appoitment"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "datetime": {
+      "type": "datetime",
+      "required": true
+    },
+    "appointment_id": {
+      "type": "uid"
+    },
+    "duration": {
+      "type": "integer",
+      "required": true,
+      "default": 30
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "consulta",
+        "seguimiento",
+        "emergencia"
+      ]
+    },
+    "status_appoitment": {
+      "type": "enumeration",
+      "required": false,
+      "default": "scheduled",
+      "enum": [
+        "scheduled",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "no_show"
+      ]
+    },
+    "notes": {
+      "type": "blocks"
+    },
+    "reminder_sent": {
+      "type": "boolean",
+      "default": false
+    },
+    "whatsapp_conversation_id": {
+      "type": "string"
+    },
+    "patient": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::patient.patient",
+      "inversedBy": "appoitment"
+    },
+    "professional": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::professional.professional",
+      "inversedBy": "appoitment"
+    },
+    "clinic": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::clinic.clinic",
+      "inversedBy": "appoitment"
+    }
+  }
+}

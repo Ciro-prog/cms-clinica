@@ -12,7 +12,8 @@
   "pluginOptions": {},
   "attributes": {
     "patient_id": {
-      "type": "uid"
+      "type": "uid",
+      "targetField": "dni"
     },
     "clinic": {
       "type": "relation",
@@ -20,14 +21,11 @@
       "target": "api::clinic.clinic",
       "inversedBy": "patient"
     },
-    "cliente_name": {
+    "first_name": {
       "type": "string"
     },
-    "direction": {
+    "address": {
       "type": "string"
-    },
-    "number_direction": {
-      "type": "biginteger"
     },
     "cell_phone": {
       "type": "biginteger"
@@ -35,7 +33,7 @@
     "obra_social": {
       "type": "string"
     },
-    "recetas": {
+    "insurance": {
       "type": "media",
       "multiple": true,
       "allowedTypes": [
@@ -45,8 +43,36 @@
         "audios"
       ]
     },
-    "turno": {
-      "type": "datetime"
+    "dni": {
+      "type": "string",
+      "maxLength": 10,
+      "required": true,
+      "unique": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "last_name": {
+      "type": "string",
+      "maxLength": 20,
+      "required": true
+    },
+    "status_patient": {
+      "type": "enumeration",
+      "default": "active",
+      "enum": [
+        "active",
+        "inactive"
+      ]
+    },
+    "whatsapp_id": {
+      "type": "string"
+    },
+    "appoitment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::appoitment.appoitment",
+      "mappedBy": "patient"
     }
   }
 }

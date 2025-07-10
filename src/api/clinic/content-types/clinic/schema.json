@@ -29,17 +29,44 @@
     "email": {
       "type": "email"
     },
-    "password": {
-      "type": "password"
-    },
-    "cell_phone": {
-      "type": "biginteger"
-    },
     "patient": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::patient.patient",
       "mappedBy": "clinic"
+    },
+    "cell_phone": {
+      "type": "string"
+    },
+    "status_clinic": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "inactive",
+        "maintenance"
+      ]
+    },
+    "whatsapp_number": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "appoitment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::appoitment.appoitment",
+      "mappedBy": "clinic"
+    },
+    "password": {
+      "type": "string"
     }
   }
 }

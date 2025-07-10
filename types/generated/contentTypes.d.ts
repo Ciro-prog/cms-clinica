@@ -373,6 +373,54 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAppoitmentAppoitment extends Struct.CollectionTypeSchema {
+  collectionName: 'appoitments';
+  info: {
+    displayName: 'Appoitment';
+    pluralName: 'appoitments';
+    singularName: 'appoitment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    appointment_id: Schema.Attribute.UID;
+    clinic: Schema.Attribute.Relation<'oneToOne', 'api::clinic.clinic'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    datetime: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    duration: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<30>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::appoitment.appoitment'
+    > &
+      Schema.Attribute.Private;
+    notes: Schema.Attribute.Blocks;
+    patient: Schema.Attribute.Relation<'oneToOne', 'api::patient.patient'>;
+    professional: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::professional.professional'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    reminder_sent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    status_appoitment: Schema.Attribute.Enumeration<
+      ['scheduled', 'confirmed', 'cancelled', 'completed', 'no_show']
+    > &
+      Schema.Attribute.DefaultTo<'scheduled'>;
+    type: Schema.Attribute.Enumeration<
+      ['consulta', 'seguimiento', 'emergencia']
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp_conversation_id: Schema.Attribute.String;
+  };
+}
+
 export interface ApiClinicClinic extends Struct.CollectionTypeSchema {
   collectionName: 'clinics';
   info: {
@@ -385,7 +433,11 @@ export interface ApiClinicClinic extends Struct.CollectionTypeSchema {
   };
   attributes: {
     address: Schema.Attribute.String;
-    cell_phone: Schema.Attribute.BigInteger;
+    appoitment: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::appoitment.appoitment'
+    >;
+    cell_phone: Schema.Attribute.String;
     clinic_id: Schema.Attribute.UID;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -397,15 +449,23 @@ export interface ApiClinicClinic extends Struct.CollectionTypeSchema {
       'api::clinic.clinic'
     > &
       Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
     name_clinic: Schema.Attribute.String;
-    password: Schema.Attribute.Password;
+    password: Schema.Attribute.String;
     patient: Schema.Attribute.Relation<'oneToOne', 'api::patient.patient'>;
     publishedAt: Schema.Attribute.DateTime;
+    status_clinic: Schema.Attribute.Enumeration<
+      ['active', 'inactive', 'maintenance']
+    >;
     subcription: Schema.Attribute.Boolean;
     suscriber: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    whatsapp_number: Schema.Attribute.String;
   };
 }
 
@@ -420,28 +480,92 @@ export interface ApiPatientPatient extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    address: Schema.Attribute.String;
+    appoitment: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::appoitment.appoitment'
+    >;
     cell_phone: Schema.Attribute.BigInteger;
-    cliente_name: Schema.Attribute.String;
     clinic: Schema.Attribute.Relation<'oneToOne', 'api::clinic.clinic'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    direction: Schema.Attribute.String;
+    dni: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 10;
+      }>;
+    email: Schema.Attribute.Email;
+    first_name: Schema.Attribute.String;
+    insurance: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    last_name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 20;
+      }>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::patient.patient'
     > &
       Schema.Attribute.Private;
-    number_direction: Schema.Attribute.BigInteger;
     obra_social: Schema.Attribute.String;
-    patient_id: Schema.Attribute.UID;
+    patient_id: Schema.Attribute.UID<'dni'>;
     publishedAt: Schema.Attribute.DateTime;
-    recetas: Schema.Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
+    status_patient: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whatsapp_id: Schema.Attribute.String;
+  };
+}
+
+export interface ApiProfessionalProfessional
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'professionals';
+  info: {
+    displayName: 'Professional';
+    pluralName: 'professionals';
+    singularName: 'professional';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    appoitment: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::appoitment.appoitment'
     >;
-    turno: Schema.Attribute.DateTime;
+    bio: Schema.Attribute.Blocks;
+    bio_professional: Schema.Attribute.Media<'images' | 'files'>;
+    clinic: Schema.Attribute.Relation<'oneToOne', 'api::clinic.clinic'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    first_name: Schema.Attribute.String;
+    last_name: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::professional.professional'
+    > &
+      Schema.Attribute.Private;
+    phone: Schema.Attribute.String;
+    professional_id: Schema.Attribute.UID;
+    publishedAt: Schema.Attribute.DateTime;
+    speciality: Schema.Attribute.Enumeration<
+      ['general', 'cardiologia', 'dermatologia', 'ginecologia', 'pediatria']
+    >;
+    status_professional: Schema.Attribute.Enumeration<
+      ['active', 'inactive', 'vacation']
+    > &
+      Schema.Attribute.DefaultTo<'active'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -957,8 +1081,10 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::appoitment.appoitment': ApiAppoitmentAppoitment;
       'api::clinic.clinic': ApiClinicClinic;
       'api::patient.patient': ApiPatientPatient;
+      'api::professional.professional': ApiProfessionalProfessional;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
